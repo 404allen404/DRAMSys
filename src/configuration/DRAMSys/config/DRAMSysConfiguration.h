@@ -57,6 +57,9 @@
  * with the actual json object that is stored at this path.
  */
 
+#define STRINGER(x) #x
+#define TO_STRING(x) STRINGER(x)
+
 namespace DRAMSys::Config
 {
 
@@ -76,7 +79,7 @@ NLOHMANN_JSONIFY_ALL_THINGS(
     Configuration, addressmapping, mcconfig, memspec, simconfig, simulationid, tracesetup)
 
 Configuration from_path(std::string_view path,
-                        std::string_view resourceDirectory = DRAMSYS_RESOURCE_DIR);
+                        std::string_view resourceDirectory = TO_STRING(DRAMSYS_RESOURCE_DIR));
 
 } // namespace DRAMSys::Config
 
