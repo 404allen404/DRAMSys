@@ -42,6 +42,11 @@
 
 #include "DRAMSys/common/DebugManager.h"
 
+#include "elfio/elfio.hpp"
+#include <elfio/elf_types.hpp>
+#include <ios>
+using namespace ELFIO;
+
 #ifdef DRAMPOWER
 #include "LibDRAMPower.h"
 #endif
@@ -202,7 +207,6 @@ unsigned int Dram::transport_dbg(tlm_generic_payload& trans)
     {
         tlm_command cmd = trans.get_command();
         unsigned int len = trans.get_data_length();
-
         if (cmd == TLM_READ_COMMAND)
         {
             if (storeMode == Configuration::StoreMode::Store)
@@ -331,6 +335,26 @@ void Dram::serialize(std::ostream& stream) const
 void Dram::deserialize(std::istream& stream)
 {
     stream.read(reinterpret_cast<char*>(memory), channelSize);
+}
+
+void Dram::read_elf(std::string elf_path) {
+
+    elfio reader;
+    Elf_Half seg_num;
+    reader.load(elf_path);
+    seg_num = reader.segments.size();
+
+    for (int i = 0; i < seg_num; ++i) {
+        const segment *seg = reader.segments[i];
+        if (seg->get_type() == PT_LOAD) {
+            Elf64_Addr addr = seg->get_virtual_address();
+            Elf_Xword size = seg->get_file_size();
+            const char *data = seg->get_data();
+            // Load segment to memory
+            memcpy(memory + addr, reinterpret_cast<const unsigned char*>(data), size);
+        }
+    }
+    
 }
 
 } // namespace DRAMSys

@@ -72,6 +72,8 @@ public:
     const Configuration& getConfig() const;
     const AddressDecoder& getAddressDecoder() const { return *addressDecoder; }
 
+    auto &getDrams() { return drams; }
+
     /**
      * Returns true if all memory controllers are in idle state.
      */

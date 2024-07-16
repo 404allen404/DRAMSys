@@ -93,6 +93,8 @@ public:
     void serialize(std::ostream& stream) const override;
     void deserialize(std::istream& stream) override;
 
+    void read_elf(std::string elf_path);
+
     Dram(const Dram&) = delete;
     Dram(Dram&&) = delete;
     Dram& operator=(const Dram&) = delete;

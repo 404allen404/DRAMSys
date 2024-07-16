@@ -310,6 +310,7 @@ void Controller::controllerMethod()
         // (4.1) Check for power-down commands (PDEA/PDEP/SREFEN or PDXA/PDXP/SREFEX)
         Rank rank = Rank(rankID);
         commandTuple = powerDownManagers[rank]->getNextCommand();
+
         if (std::get<CommandTuple::Command>(commandTuple) != Command::NOP)
             readyCommands.emplace_back(commandTuple);
         else
