@@ -151,7 +151,6 @@ tlm_sync_enum Dram::nb_transport_fw(tlm_generic_payload& trans, tlm_phase& phase
         if (phase == BEGIN_RD || phase == BEGIN_RDA)
         {
             unsigned char* phyAddr = memory + trans.get_address();
-
             if (trans.get_byte_enable_ptr() == nullptr)
             {
                 memcpy(trans.get_data_ptr(), phyAddr, trans.get_data_length());
@@ -337,7 +336,7 @@ void Dram::deserialize(std::istream& stream)
     stream.read(reinterpret_cast<char*>(memory), channelSize);
 }
 
-void Dram::read_elf(std::string elf_path, uint64_t base_address) {
+void Dram::read_elf(std::string elf_path) {
 
     elfio reader;
     Elf_Half seg_num;
@@ -351,7 +350,7 @@ void Dram::read_elf(std::string elf_path, uint64_t base_address) {
             Elf_Xword size = seg->get_file_size();
             const char *data = seg->get_data();
             // Load segment to memory
-            memcpy(memory + addr - base_address, reinterpret_cast<const unsigned char*>(data), size);
+            memcpy(memory + addr, reinterpret_cast<const unsigned char*>(data), size);
         }
     }
     
