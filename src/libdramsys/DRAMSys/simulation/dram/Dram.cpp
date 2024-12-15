@@ -336,7 +336,7 @@ void Dram::deserialize(std::istream& stream)
     stream.read(reinterpret_cast<char*>(memory), channelSize);
 }
 
-void Dram::read_elf(std::string elf_path) {
+void Dram::read_elf(std::string elf_path, uint64_t base_address) {
 
     elfio reader;
     Elf_Half seg_num;
@@ -350,7 +350,7 @@ void Dram::read_elf(std::string elf_path) {
             Elf_Xword size = seg->get_file_size();
             const char *data = seg->get_data();
             // Load segment to memory
-            memcpy(memory + addr, reinterpret_cast<const unsigned char*>(data), size);
+            memcpy(memory + (addr - base_address), reinterpret_cast<const unsigned char*>(data), size);
         }
     }
     

@@ -46,6 +46,7 @@
 #include "DRAMSys/configuration/Configuration.h"
 #include "DRAMSys/configuration/memspec/MemSpec.h"
 
+#include <cstdint>
 #include <memory>
 #include <systemc>
 #include <tlm>
@@ -93,7 +94,7 @@ public:
     void serialize(std::ostream& stream) const override;
     void deserialize(std::istream& stream) override;
 
-    void read_elf(std::string elf_path);
+    void read_elf(std::string elf_path, uint64_t base_address);
 
     Dram(const Dram&) = delete;
     Dram(Dram&&) = delete;
