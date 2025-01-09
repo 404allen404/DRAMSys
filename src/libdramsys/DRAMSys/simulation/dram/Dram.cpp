@@ -337,23 +337,16 @@ void Dram::deserialize(std::istream& stream)
 }
 
 void Dram::read_elf(std::string elf_path, uint64_t base_address) {
-
-    elfio reader;
-    Elf_Half seg_num;
-    reader.load(elf_path);
-    seg_num = reader.segments.size();
-
-    for (int i = 0; i < seg_num; ++i) {
-        const segment *seg = reader.segments[i];
-        if (seg->get_type() == PT_LOAD) {
-            Elf64_Addr addr = seg->get_virtual_address();
-            Elf_Xword size = seg->get_file_size();
-            const char *data = seg->get_data();
-            // Load segment to memory
-            memcpy(memory + (addr - base_address), reinterpret_cast<const unsigned char*>(data), size);
-        }
+  elfio reader;
+  reader.load(elf_path);
+  for (const auto& seg : reader.segments) {
+    if (seg->get_type() == PT_LOAD) {
+      auto physical_addr = seg->get_physical_address();
+      auto size = seg->get_file_size();
+      auto data = seg->get_data();
+      memcpy(memory + (physical_addr - base_address), data, size);
     }
-    
+  }
 }
 
 } // namespace DRAMSys
